@@ -96,7 +96,6 @@ class DisplaySquare{
 
 
 class Circle{
-
     constructor(x, y, radius, color, lnColor, speed, yBorder ,xBorder, collideAudio){
         this.yBorder=yBorder;
         this.xBorder=xBorder;
@@ -116,7 +115,7 @@ class Circle{
         context.beginPath();
         context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
         context.fillStyle=this.color;
-        context.fill()
+        context.fill();
         context.strokeStyle=this.lnColor;
         context.lineWidth=1;
         context.stroke();
@@ -159,7 +158,7 @@ class Environment{
     triggerRound=function(){
         this.pushSquaresDown();
         for(let i=0;i<30;i++){
-            if(Math.floor(Math.random()*6)!=1)this.squares.push(new Square(this.X_BORDER+(i*(this.SQUARE_SIZE+this.SQUARE_GAP)), this.Y_BORDER+this.SQUARE_GAP, this.SQUARE_SIZE, this.SQUARE_SIZE, Math.floor((Math.random()*6)+8), 'white','#007cbd'));
+            if(Math.floor(Math.random()*6)!=1)this.squares.push(new Square(this.X_BORDER+(i*(this.SQUARE_SIZE+this.SQUARE_GAP)), this.Y_BORDER+this.SQUARE_GAP, this.SQUARE_SIZE, this.SQUARE_SIZE, Math.floor((Math.random()*6)+6), 'white','#007cbd'));
         }
     }
     constructor(){
@@ -259,10 +258,15 @@ class Player{
             const angle = Math.atan2(e.clientY - this.y, e.clientX - this.x);
         }
         canvas.onclick = e => {
+            
             if(this.isShooting)return;
+            this.enabled=false;
+            setTimeout(() => {
+                this.enabled=true;
+            },  4000)
+            this.isShooting=true;
             this.left=false;
             this.right=false;
-            this.isShooting=true;
             const angle = Math.atan2(e.clientY - this.y, e.clientX - this.x);
             const velocity = {
                 x: Math.cos(angle)*5,
