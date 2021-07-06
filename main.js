@@ -299,7 +299,7 @@ var hasLost=false;
 
 class Environment{
     
-    SQUARE_SIZE=70;
+    SQUARE_SIZE=Math.floor(window_width/30);
     SQUARE_GAP=0;
     X_BORDER=(window_width-this.SQUARE_SIZE*30)/2;
     Y_BORDER=100;
