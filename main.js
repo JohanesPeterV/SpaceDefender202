@@ -27,27 +27,28 @@ class Square{
         this.hp = hp;
         this.txtColor=txtColor;
         this.lnColor=lnColor;
+        this.color=this.BG_COLOR_1;
     }
     setBgColor(context){
         
         
-        if(this.maxHp==this.hp)context.fillStyle=this.BG_COLOR_1;
+        if(this.maxHp==this.hp)this.color=this.BG_COLOR_1;
         else if(this.hp>(this.maxHp*4)/5){
-            context.fillStyle=this.BG_COLOR_2;
+            this.color=this.BG_COLOR_2;
         }
         else if(this.hp>(this.maxHp*3)/5){
-            context.fillStyle=this.BG_COLOR_3;
+            this.color=this.BG_COLOR_3;
         }
         else if(this.hp>(this.maxHp*2)/5){
-            context.fillStyle=this.BG_COLOR_4;
+            this.color=this.BG_COLOR_4;
         }
         else if(this.hp>(this.maxHp*1)/5){
-            context.fillStyle=this.BG_COLOR_5;
+            this.color=this.BG_COLOR_5;
         }
         else{
-            context.fillStyle=this.BG_COLOR_6
+            this.color=this.BG_COLOR_6
         }
-
+        context.fillStyle=this.color;
 
         context.fill();
     }
@@ -59,10 +60,10 @@ class Square{
         context.fillText(this.hp, this.x + this.width/2, this.y + this.height/2);
         context.textAlign='center';
         context.textBaseline='middle';
-        context.font='1vw sans-serif';
+        context.font='0.8vw sans-serif';
         // context.strokeStyle=this.lnColor;
         // context.stroke();
-        // context.closePath();
+        context.closePath();
     }
 
     disrender(context){
@@ -99,7 +100,7 @@ class DisplaySquare{
         context.fillText(this.content, this.x + this.width/2, this.y + this.height/2);
         context.textAlign='center';
         context.textBaseline='middle';
-        context.font='20px sans-serif';
+        context.font='0.7vw sans-serif';
         context.strokeStyle=this.lnColor;
         context.stroke();
         // context.closePath();
@@ -110,11 +111,9 @@ class DisplaySquare{
 
 class Circle{
 
-    constructor(x, y, radius, color, lnColor, speed, yBorder ,xBorder, collideAudio, damage, soundPath){
+    constructor(x, y, radius, color, lnColor, speed, collideAudio, damage, soundPath){
         this.damage=damage;
         this.soundPath=soundPath;
-        this.yBorder=yBorder;
-        this.xBorder=xBorder;
         this.collideAudio=collideAudio;      
         this.lastX=this.x;
         this.lastY=this.y;
@@ -139,69 +138,52 @@ class Circle{
         // context.stroke();
         context.closePath();
     }
-    randomizeDir(projectile){
-        var angle;
-        //naik dan ke kiri
-        console.log(projectile.dx);
-        if(projectile.dy<0&&projectile.dx>0){
-            angle= Math.atan2(Math.floor(Math.random*10), Math.floor(Math.random*10));
-            console.log('naik dan ke kiri');
-        }
-        //naik dan ke kanan
-         if(projectile.dy<0&&projectile.dx<0){
-            
-            console.log('naik dan ke kanan');
+    
+    // initC(xAxis, collideColor){      
+    //     for(let i=0;i<8;i++){
+    //         this.splashProjectiles.push(new Particle(this.x,this.y,Math.floor(Math.random()*3+1), collideColor, {x: Math.floor(this.dx/12+((Math.random()*5-2)*!xAxis)),y: Math.floor(this.dy/12+((Math.random()*5-2)*xAxis))}));
+    //     }
+    // }
 
-        }
-        //turun dan ke kiri
-         if(projectile.dy>0&&projectile.dx>0){
-
-            console.log('turun dan ke kiri');
-
-        }
-        //turun dan ke kanan
-         if(projectile.dy>0&&projectile.dx<0){                        
-            
-            console.log('turun dan ke kanan');
-
-        }
-
-
-        angle= Math.atan2(Math.floor(Math.random*10)+1, Math.floor(Math.random*10)+1);
-        angle= Math.atan2(1, 1);
-
-        projectile.dx=Math.cos(angle)*20;
-        projectile.dy=Math.sin(angle)*20;
-    }    
+    // animateC(context){
+    //     this.splashProjectiles.forEach((p,idx) => {
+    //         p.update(context);
+    //         if(p.alpha<=0)this.splashProjectiles.splice(idx,1);    
+    //     });
+    // }
     update(context){
+        this.draw(context);
         this.lastX=this.x;
         this.lastY=this.y;
-
-        this.draw(context);
         this.dx=Math.floor(this.dx);
         this.dy=Math.floor(this.dy);
         this.x += this.dx;
         this.y += this.dy;
 
-        if(this.x + this.radius > window_width-this.xBorder){
+        if(this.x + this.radius > window_width){
             
             this.dx = this.dx * -1;
-            this.collideAudio(this.soundPath);
+            this.collideAudio(this.soundPath,0.5);
+            // this.initC(true,'white');
             // this.randomizeDir(this);
         }
 
-        if( this.x - this.radius <= this.xBorder){
+        if( this.x - this.radius <= 0){
             // this.x=this.xBorder+this.radius;
             this.dx = this.dx * -1;
-            this.collideAudio(this.soundPath);
+            this.collideAudio(this.soundPath,0.5);
+            // this.initC(true,'white');
+
             // this.randomizeDir(this);
 
         }
         
-        if(this.y - this.radius <= this.yBorder){
-            this.y=this.yBorder+this.radius;
+        if(this.y - this.radius <= 0){
+            this.y=this.radius;
             this.dy = this.dy * -1;
-            this.collideAudio(this.soundPath);
+            this.collideAudio(this.soundPath,0.5);
+            // this.initC(false,'white');
+
             // this.randomizeDir(this);
 
         }
@@ -216,13 +198,49 @@ class Circle{
     }
 }
 
+class Particle{
+
+    constructor(x, y, radius, color, speed){
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        this.color = color;
+        this.speed=speed;
+        this.dx = this.speed.x;
+        this.dy = this.speed.y;
+        this.alpha=1;
+    }
+    
+    draw(context){
+        context.save();
+        context.globalAlpha=this.alpha;
+        context.beginPath();
+        context.rect(this.x,this.y,this.radius,this.radius);
+        // context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+        context.fillStyle=this.color;
+        context.fill();
+        context.closePath();
+        context.restore();
+    }
+    update(context){
+        this.alpha-=0.02;
+        this.draw(context);
+        this.dx*=0.95;
+        this.dy*=0.95;
+        this.dx=this.dx;
+        this.dy=this.dy;
+        this.x += this.dx;
+        this.y += this.dy;
+    }
+
+}
+
+
 class TrajectoryCircle{
     travelTime=0;
-    constructor(x, y, radius,  speed, yBorder ,xBorder,travelTime){
+    constructor(x, y, radius,  speed, travelTime){
         this.travelTime=travelTime;
         this.alpha=1;
-        this.yBorder=yBorder;
-        this.xBorder=xBorder;
         this.lastX=this.x;
         this.lastY=this.y;
         this.x = x;
@@ -234,17 +252,14 @@ class TrajectoryCircle{
     }
 
     update(velocity,initX,initY){
-        this.alpha-=0.0016;
+        this.alpha-=0.01;
         this.velocity=velocity;
-
         this.dy=velocity.y;
         this.dx=velocity.x;
         this.x=initX;
         this.y=initY;
-        
         this.lastX=this.x;
         this.lastY=this.y;
-
     }
     calculate(){
         this.dx=Math.floor(this.dx);
@@ -252,17 +267,17 @@ class TrajectoryCircle{
         this.x += this.dx;
         this.y += this.dy;
 
-        if(this.x + this.radius > window_width-this.xBorder){
+        if(this.x + this.radius > window_width){
             this.dx*=-1;
         }
 
-        if( this.x - this.radius <= this.xBorder){
+        if( this.x - this.radius <= 0){
             // this.x=this.xBorder+this.radius;
             this.dx*=-1;
         }
         
-        if(this.y - this.radius <= this.yBorder){
-            this.y=this.yBorder+this.radius;
+        if(this.y - this.radius <= 0){
+            this.y=this.radius;
             this.dy*=-1;
 
         }
@@ -279,35 +294,28 @@ class TrajectoryCircle{
 
 
 }
+var hasLost=false;
+    
 
 class Environment{
-    SQUARE_SIZE=60;
+    
+    SQUARE_SIZE=70;
     SQUARE_GAP=0;
     X_BORDER=(window_width-this.SQUARE_SIZE*30)/2;
     Y_BORDER=100;
     pushing=false;
     ROUND_INTERVAL=200/30;
-    hasLost=false;
+    
     triggerRound=function(){
+        let sum=25;
+        let winx=(window_width-sum*this.SQUARE_SIZE)/2;
         this.pushSquaresDown();
-        for(let i=0;i<30;i++){
-            if(Math.floor(Math.random()*3)!=1)this.squares.push(new Square(this.X_BORDER+(i*(this.SQUARE_SIZE+this.SQUARE_GAP)), this.Y_BORDER+this.SQUARE_GAP, this.SQUARE_SIZE, this.SQUARE_SIZE, Math.floor((Math.random()*6)+6), 'white','#007cbd'));
+        for(let i=0;i<sum;i++){
+            if(Math.floor(Math.random()*3)!=1)this.squares.push(new Square(winx+(i*(this.SQUARE_SIZE+this.SQUARE_GAP)), -this.SQUARE_SIZE, this.SQUARE_SIZE, this.SQUARE_SIZE, Math.floor((Math.random()*12)+12), 'white','#007cbd'));
         }
     }
     constructor(){
-        
-        this.border = new DisplaySquare(0, 0, window_width, this.Y_BORDER+this.SQUARE_SIZE, 'JPantul', '#121212','white','#121212');
         this.squares =[];
-        this.triggerRound();
-        setTimeout(() => {
-            this.triggerRound();
-        },  200) 
-        setTimeout(() => {
-            this.triggerRound();
-        },  400) 
-        setTimeout(() => {
-            this.triggerRound();
-        },  600) 
 
     }
     pushSquaresDown(){
@@ -316,6 +324,11 @@ class Environment{
     moveSquaresDown(){
         if(this.pushing==false)return;
         let miniPush=(this.SQUARE_SIZE+this.SQUARE_GAP)/30;
+        
+        setTimeout(() => {
+        
+            waves++;
+        },  30*this.ROUND_INTERVAL) 
         for(let i = 0 ; i<30; i++){
             this.squares.forEach(square => {
                 
@@ -323,6 +336,7 @@ class Environment{
                 square.lastX=square.x;
             setTimeout(() => {
                 square.y+=miniPush;
+
             },  i*this.ROUND_INTERVAL) 
             });
         }
@@ -348,9 +362,18 @@ class Environment{
                 
                 square.disrenderCurr(context);
                 this.squares.splice(idx,1);
+                kill++;
             }
-            if(square.y>=window_height){
-                this.hasLost=true;
+            if(square.y+square.width>=window_height){
+                popup.style.display='flex';
+                let waveScore=document.getElementById('wave-score');
+                let killScore=document.getElementById('kill-score');
+                let damageScore=document.getElementById('damage-score');
+                waveScore.textContent=waves;
+                killScore.textContent=kill;
+                damageScore.textContent=damage;
+                document.getElementById('play-again').textContent='Play Again';
+                hasLost=true;
             }
         });
 
@@ -361,7 +384,6 @@ class Environment{
         this.drawSquares(context);
         this.validateSquareExistance(context);
         this.moveSquaresDown();
-        this.border.draw(context);
 
     }
 
@@ -371,13 +393,16 @@ class Environment{
 
 
 
+var waves;
+var kill;
+var damage;
+
 class Player{
     SHOOT_DELAY=10;
-    PROJECTILE_INTERVAL=60;
+    PROJECTILE_INTERVAL=120;
     triggeredRound=true;
-    
-
     constructor(x, y, radius, color, speed, projectileCount, environment){
+
         this.trajectoryCircles = [];
         this.enabled=false;
         this.environment=environment;
@@ -395,6 +420,7 @@ class Player{
         this.right = false;
         this.dx = 3 * this.speed.x;
         this.dy = 3 * this.speed.y;
+        this.splashProjectiles=[];
         setTimeout(() => {
             this.isShooting=false;
             this.enabled=true;
@@ -417,13 +443,14 @@ class Player{
             
             for(let i=0; i<projectileCount; i++){
                 setTimeout(() => {
+                    this.playCollision('assets/gunfire.mp3',0.2);
                     let circle;
                     let randomSize=Math.floor(Math.random()*10+5);
                     let soundPath='thock.mp3';
-                    if(randomSize<13){
+                    if(randomSize<8){
                         soundPath='ping.mp3'
                     }
-                    if(randomSize<18){
+                    if(randomSize<13){
                         soundPath='pong.mp3'
                     }
                     // if(randomInt==0){
@@ -432,11 +459,13 @@ class Player{
                     //     circle=new Circle(player.x, player.y+1, 12, '#d9b6e0', '#5d9cbd', velocity, environment.Y_BORDER+environment.SQUARE_SIZE, environment.X_BORDER, this.playCollision,2,'./assets/pong.mp3')
                     // }else{
                     //     circle=new Circle(player.x, player.y+1, 22, '#8274c9', '#5d9cbd', velocity, environment.Y_BORDER+environment.SQUARE_SIZE, environment.X_BORDER, this.playCollision,3,'./assets/thock.mp3')
-                    // }                           
-                    circle=new Circle(player.x, player.y+1, randomSize, `hsl(${Math.random()*360},50%,50%)`, '#5d9cbd', velocity, environment.Y_BORDER+environment.SQUARE_SIZE, environment.X_BORDER, this.playCollision,Math.floor(Math.random()*3+1),'./assets/'+soundPath);
+                    // }                 
+
+                    circle=new Circle(player.x, player.y+1, randomSize, `hsl(${Math.random()*360},50%,50%)`, '#5d9cbd', velocity, this.playCollision,Math.floor(Math.random()*2+1),'./assets/'+soundPath);
                     this.projectiles.push(
                         circle
                     )
+
                 },  i*this.PROJECTILE_INTERVAL)
             }
             setTimeout(() => {
@@ -468,12 +497,13 @@ class Player{
             }
           };
         
-        this.playCollision = (path)=>{
+        this.playCollision = (path,volume)=>{
             this.collisionSound = document.createElement("audio");
             this.collisionSound.src = path;
             this.collisionSound.setAttribute("preload", "auto");
             this.collisionSound.setAttribute("controls", "none");
             this.collisionSound.style.display = "none";
+            this.collisionSound.volume=volume;
             document.body.appendChild(this.collisionSound);
             this.collisionSound.play();
         }
@@ -484,7 +514,7 @@ class Player{
     
     updatePosition(){
         if(this.isShooting)return;
-        if(this.left&&this.x>=(environment.X_BORDER)*2) this.x -= this.speed;
+        if(this.left&&this.x-this.radius>=0) this.x -= this.speed;
         if(this.right&&this.x<=window_width-environment.X_BORDER-(window_width-environment.X_BORDER-1)/8) this.x += this.speed;
     }
 
@@ -496,7 +526,6 @@ class Player{
             
             if(projectile.y - projectile.radius > window_height){
                 
-                projectile.disrender(context);
                 this.projectiles.splice(idx, 1);
 
             }
@@ -515,8 +544,10 @@ class Player{
                     //- naik
                     //+ turun  
                     projectile.dy*=-1;
+                    this.playCollision(projectile.soundPath,0.5);
+                    this.initC(projectile.x,projectile.y,projectile.dx,projectile.dy,false,square.color,square.hp*2);
                     square.hp-=projectile.damage;
-                    this.playCollision(projectile.soundPath);
+                    damage+=projectile.damage;
                     // this.randomizeDir(projectile);
 
 
@@ -525,8 +556,11 @@ class Player{
                     //- berarti kiri
                     //+ berarti kanan
                     projectile.dx*=-1;
+                    this.playCollision(projectile.soundPath,0.5);
+                    this.initC(projectile.x,projectile.y,projectile.dx,projectile.dy,true,square.color,square.hp*2);
                     square.hp-=projectile.damage;
-                    this.playCollision(projectile.soundPath);
+                    damage+=projectile.damage;
+
                     // this.randomizeDir(projectile);                    
                 }
             }) 
@@ -590,8 +624,8 @@ class Player{
             }
 
         }
-        for(let i=0;i<30;i++)
-            this.trajectoryCircles.push(new TrajectoryCircle(this.x,this.y+1,12,this.tVelocity,environment.Y_BORDER+environment.SQUARE_SIZE, environment.X_BORDER,i*20));
+        for(let i=0;i<10;i++)
+            this.trajectoryCircles.push(new TrajectoryCircle(this.x,this.y+1,8,this.tVelocity,i*10));
         
     }
     updateTrajectories(context){
@@ -630,7 +664,7 @@ class Player{
                 
 
             
-                if(circle.travelTime>600){
+                if(circle.travelTime>100){
                     isDead=idx;
                 }
             }
@@ -639,14 +673,28 @@ class Player{
         });
         if(isDead!=-1){
             this.trajectoryCircles.splice(isDead,1);
-            this.trajectoryCircles.push(new TrajectoryCircle(this.x,this.y+1,12,this.tVelocity,environment.Y_BORDER+environment.SQUARE_SIZE, environment.X_BORDER,0));
+            this.trajectoryCircles.push(new TrajectoryCircle(this.x,this.y+1,8,this.tVelocity,0));
     
         }
 
     }
+    initC(xStart, yStart, dx, dy, xAxis, collideColor, count){      
+        for(let i=0;i<count;i++){
+            this.splashProjectiles.push(new Particle(xStart,yStart,Math.floor(Math.random()*4+1), collideColor, {x: Math.floor(dx/Math.floor(Math.random()*3+2)+((Math.random()*5-2)*!xAxis)),y: Math.floor(dy/Math.floor(Math.random()*8+2)+((Math.random()*5-2)*xAxis))}));
+        }
+    }
+
+    animateC(context){
+        this.splashProjectiles.forEach((p,idx) => {
+            p.update(context);
+            if(p.alpha<=0)this.splashProjectiles.splice(idx,1);    
+        });
+    }
+
     update(context){
         this.lastX=this.x;
         this.lastY=this.y;
+        this.animateC(context);
         this.updateProjectiles(context);
         this.updatePosition();
         this.updateRound();
@@ -654,8 +702,9 @@ class Player{
     }
     draw(context){
         context.beginPath();
-        context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
         context.fillStyle=this.color;
+
+        context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
         context.fill();
         context.closePath();
     
@@ -666,33 +715,95 @@ class Player{
         context.closePath();
     }   
 }
-let environment=new Environment();
-
-
-let player = new Player(window_width/2, window_height-5, 25, '#5d9cbd', 9,3,environment);
+let environment;
 
 
 
 
+let player ;
+
+
+
+
+
+
+let waveTxt=document.getElementById('wave-value');
+let killTxt=document.getElementById('kill-value');
+let damageTxt=document.getElementById('damage-value');
+
+
+
+function playBg(){
+    let bgMusic = document.createElement("audio");
+    bgMusic.src = './assets/bgMusic.mp3';
+    bgMusic.setAttribute("preload", "auto");
+    bgMusic.setAttribute("controls", "none");
+    bgMusic.style.display = "none";
+    bgMusic.id="bg-music";
+    document.body.appendChild(bgMusic);
+    document.getElementById("bg-music").volume=0.05;
+    document.getElementById("bg-music").loop=true;
+    
+    bgMusic.play();
+
+}
+function init(){
+    hasLost=false;
+    environment=new Environment();
+
+    player = new Player(window_width/2, window_height-5, 20, '#5d9cbd', 9,40,environment);
+
+    waves=0;
+    kill=0;
+    damage=0;
+}
+ 
+init();
 const animate = () => {
+    if(hasLost)return;
     requestAnimationFrame(animate);
+    waveTxt.textContent=waves;
+    killTxt.textContent=kill;
+    damageTxt.textContent=damage;
     // player.disrender(ctx);
-    // player.disrenderProjectiles(ctx);
-    
+    // player.disrenderProjectiles(ctx);    
     // environment.disrender(ctx);
-    ctx.fillStyle='rgba(0,0,0,0.4)';
-    
+    if(player.isShooting)ctx.fillStyle='rgba(0,0,0,1)';
+    if(!player.isShooting)ctx.fillStyle='rgba(0,0,0,0.2)';
     ctx.fillRect(0,0,canvas.width,canvas.height); 
-    player.draw(ctx);
     player.update(ctx);
+    player.draw(ctx);
     environment.update(ctx);
-
 }
 
 
+let playAgainBtn=document.getElementById('play-again');
+var popup=document.getElementById('popup-page');
+popup.style.display='flex';
 
 
-animate();
+firstGame=true;
+playAgainBtn.addEventListener('click', ()=>{
+    if(hasLost)init();
+    
+    environment.triggerRound();
+    setTimeout(() => {
+        environment.triggerRound();
+    },  200) 
+    setTimeout(() => {
+        environment.triggerRound();
+    },  400) 
+    setTimeout(() => {
+        environment.triggerRound();
+    },  600) 
+
+        popup.style.display='none';
+        if(firstGame)playBg();
+        firstGame=false;
+        animate();
+
+    
+})
 
 
 

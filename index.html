@@ -8,8 +8,36 @@
     <link rel="stylesheet" href="styles.css">
 
 </head>
-<body>
+<div id="popup-page">
+    <div id="scores-popup">
+        <div id="info-container">
+            <div>
+                <h1 id="wave-score">0</h1>
+                <p>Waves</p>
+            </div>
+            <div>
+                <h1 id="kill-score">0</h1>
+                <p>Blocks destroyed</p>
+            </div>
+            <div>
+                <h1 id="damage-score">0</h1>
+                <p>Damage dealt</p>
+            </div>
+        </div>
+        <button id="play-again">Play</button>
 
+    </div>
+
+</div>
+<body>
+    <div id="score-div">
+        <span>Wave               : </span><span id="wave-value">100</span>
+        <br>
+        <span>Blocks destroyed   : </span><span id="kill-value">100</span>
+        <br>
+        <span>Total damage dealt : </span><span id="damage-value">100</span>
+        
+    </div>
     <canvas id="canvas"></canvas>
 
     
