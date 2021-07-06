@@ -762,6 +762,8 @@ init();
 const animate = () => {
     if(hasLost)return;
     requestAnimationFrame(animate);
+    window_width=window.innerWidth;
+    window_height=window.innerHeight;
     waveTxt.textContent=waves;
     killTxt.textContent=kill;
     damageTxt.textContent=damage;
