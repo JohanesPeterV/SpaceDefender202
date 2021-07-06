@@ -783,11 +783,12 @@ let playAgainBtn=document.getElementById('play-again');
 var popup=document.getElementById('popup-page');
 popup.style.display='flex';
 
+var scoreDiv=document.getElementById('score-div');
 
 firstGame=true;
 playAgainBtn.addEventListener('click', ()=>{
     if(hasLost)init();
-    
+    scoreDiv.style.display='block';
     environment.triggerRound();
     setTimeout(() => {
         environment.triggerRound();
