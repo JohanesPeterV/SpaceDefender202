@@ -250,9 +250,8 @@ class TrajectoryCircle{
         this.dx = this.speed.x;
         this.dy = this.speed.y;
     }
-
     update(velocity,initX,initY){
-        this.alpha-=0.0016;
+        this.alpha-=0.005;
         this.velocity=velocity;
         this.dy=velocity.y;
         this.dx=velocity.x;
@@ -625,8 +624,8 @@ class Player{
             }
 
         }
-        for(let i=0;i<60;i++)
-            this.trajectoryCircles.push(new TrajectoryCircle(this.x,this.y+1,8,this.tVelocity,i*10,(60-i)/60));       
+        for(let i=0;i<20;i++)
+            this.trajectoryCircles.push(new TrajectoryCircle(this.x,this.y+1,8,this.tVelocity,i*10,(20-i)/20));       
     }
     updateTrajectories(context){
         
@@ -669,7 +668,7 @@ class Player{
 
                 circle.calculate();
             
-                if(circle.travelTime>600){
+                if(circle.travelTime>200){
                     isDead=idx;
                 }
             }
@@ -756,7 +755,7 @@ function init(){
     hasLost=false;
     environment=new Environment();
 
-    player = new Player(window_width/2, window_height-5, 20, '#5d9cbd', 9,20,environment);
+    player = new Player(window_width/2, window_height-5, 20, '#5d9cbd', 9,1,environment);
 
     waves=0;
     kill=0;
