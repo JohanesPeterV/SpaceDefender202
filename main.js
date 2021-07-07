@@ -60,7 +60,7 @@ class Square{
         context.fillText(this.hp, this.x + this.width/2, this.y + this.height/2);
         context.textAlign='center';
         context.textBaseline='middle';
-        context.font='0.8vw sans-serif';
+        context.font='16px sans-serif';
         // context.strokeStyle=this.lnColor;
         // context.stroke();
         context.closePath();
@@ -643,21 +643,21 @@ class Player{
                     var distY = Math.abs(circle.y - square.y - square.height / 2);
                     
                     if (distX > (square.width / 2 + circle.radius)) {
-
+                        return;
                     }
-                    else if (distY > (square.width / 2 + circle.radius)) {
+                    if (distY > (square.width / 2 + circle.radius)) {
+                        return;    
                     }
-                    else{
-                        if (distX <= (square.width / 2)) {
-                            //+ turun  
-                            circle.dy*=-1;
+                    if (distX <= (square.width / 2)) {
+                        //+ turun  
+                        circle.dy*=-1;
     
-                        }
-                        if (distY <= (square.height / 2)) {
-                            circle.dx*=-1;
-                        }
+                    }
+                    if (distY <= (square.height / 2)) {
+                        circle.dx*=-1;
+                    }
     
-                    } 
+                    
                     
                 })
                 
