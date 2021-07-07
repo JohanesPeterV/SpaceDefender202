@@ -155,8 +155,8 @@ class Circle{
         this.draw(context);
         this.lastX=this.x;
         this.lastY=this.y;
-        this.dx=Math.floor(this.dx);
-        this.dy=Math.floor(this.dy);
+        this.dx=this.dx;
+        this.dy=this.dy;
         this.x += this.dx;
         this.y += this.dy;
 
@@ -238,9 +238,9 @@ class Particle{
 
 class TrajectoryCircle{
     travelTime=0;
-    constructor(x, y, radius,  speed, travelTime){
+    constructor(x, y, radius,  speed, travelTime,alpha){
         this.travelTime=travelTime;
-        this.alpha=1;
+        this.alpha=alpha;
         this.lastX=this.x;
         this.lastY=this.y;
         this.x = x;
@@ -252,7 +252,7 @@ class TrajectoryCircle{
     }
 
     update(velocity,initX,initY){
-        this.alpha-=0.01;
+        this.alpha-=0.0016;
         this.velocity=velocity;
         this.dy=velocity.y;
         this.dx=velocity.x;
@@ -262,8 +262,8 @@ class TrajectoryCircle{
         this.lastY=this.y;
     }
     calculate(){
-        this.dx=Math.floor(this.dx);
-        this.dy=Math.floor(this.dy);
+        this.dx=this.dx;
+        this.dy=this.dy;
         this.x += this.dx;
         this.y += this.dy;
 
@@ -437,8 +437,8 @@ class Player{
             this.right=false;
             const angle = Math.atan2(e.clientY - this.y, e.clientX - this.x);
             const velocity = {
-                x: Math.floor(Math.cos(angle)*20),
-                y: Math.floor(Math.sin(angle)*20)
+                x: Math.cos(angle)*20,
+                y: Math.sin(angle)*20
             }
             
             for(let i=0; i<projectileCount; i++){
@@ -619,14 +619,13 @@ class Player{
         canvas.onmousemove = e =>{
             let tAngle = Math.atan2(e.clientY - this.y, e.clientX - this.x);
             this.tVelocity = {
-                x: Math.floor(Math.cos(tAngle)*20),
-                y: Math.floor(Math.sin(tAngle)*20)
+                x: Math.cos(tAngle)*20,
+                y: Math.sin(tAngle)*20
             }
 
         }
-        for(let i=0;i<10;i++)
-            this.trajectoryCircles.push(new TrajectoryCircle(this.x,this.y+1,8,this.tVelocity,i*10));
-        
+        for(let i=0;i<60;i++)
+            this.trajectoryCircles.push(new TrajectoryCircle(this.x,this.y+1,8,this.tVelocity,i*10,(60-i)/60));       
     }
     updateTrajectories(context){
         
@@ -664,7 +663,7 @@ class Player{
                 
 
             
-                if(circle.travelTime>100){
+                if(circle.travelTime>600){
                     isDead=idx;
                 }
             }
@@ -673,7 +672,7 @@ class Player{
         });
         if(isDead!=-1){
             this.trajectoryCircles.splice(isDead,1);
-            this.trajectoryCircles.push(new TrajectoryCircle(this.x,this.y+1,8,this.tVelocity,0));
+            this.trajectoryCircles.push(new TrajectoryCircle(this.x,this.y+1,8,this.tVelocity,0,1));
     
         }
 
@@ -741,7 +740,7 @@ function playBg(){
     bgMusic.style.display = "none";
     bgMusic.id="bg-music";
     document.body.appendChild(bgMusic);
-    document.getElementById("bg-music").volume=0.05;
+    document.getElementById("bg-music").volume=0.2;
     document.getElementById("bg-music").loop=true;
     
     bgMusic.play();
@@ -757,25 +756,48 @@ function init(){
     kill=0;
     damage=0;
 }
- 
+
 init();
+
+var fps, fpsInterval, startTime, now, then, elapsed;
+
+function startFps(fps){
+    fpsInterval=1000/fps;
+    then=Date.now();
+    startTime=then;
+    animate();
+}
+
+
 const animate = () => {
     if(hasLost)return;
     requestAnimationFrame(animate);
-    window_width=window.innerWidth;
-    window_height=window.innerHeight;
-    waveTxt.textContent=waves;
-    killTxt.textContent=kill;
-    damageTxt.textContent=damage;
-    // player.disrender(ctx);
-    // player.disrenderProjectiles(ctx);    
-    // environment.disrender(ctx);
-    if(player.isShooting)ctx.fillStyle='rgba(0,0,0,1)';
-    if(!player.isShooting)ctx.fillStyle='rgba(0,0,0,0.2)';
-    ctx.fillRect(0,0,canvas.width,canvas.height); 
-    player.update(ctx);
-    player.draw(ctx);
-    environment.update(ctx);
+
+    now = Date.now();
+    elapsed = now - then;
+
+
+
+    if (elapsed > fpsInterval) {
+
+        then = now - (elapsed % fpsInterval);
+
+
+        window_width=window.innerWidth;
+        window_height=window.innerHeight;
+        waveTxt.textContent=waves;
+        killTxt.textContent=kill;
+        damageTxt.textContent=damage;
+        // if(player.isShooting)ctx.fillStyle='rgba(0,0,0,1)';
+        // if(!player.isShooting)
+        ctx.fillStyle='rgba(0,0,0,0.2)';
+        ctx.fillRect(0,0,canvas.width,canvas.height); 
+        player.update(ctx);
+        player.draw(ctx);
+        environment.update(ctx);
+    }
+
+
 }
 
 
@@ -803,7 +825,7 @@ playAgainBtn.addEventListener('click', ()=>{
         popup.style.display='none';
         if(firstGame)playBg();
         firstGame=false;
-        animate();
+        startFps(60);
 
     
 })
