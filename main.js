@@ -536,12 +536,13 @@ class Player{
                 if (distY > (square.width / 2 + projectile.radius)) {
                     return;
                 }
-            
+                
                 if (distX <= (square.width / 2)) {
                     //- naik
                     //+ turun  
-                    if(projectile.y>square.y)projectile.y=square.y+square.height+projectile.radius;                        
-                    else if(projectile.y<square.y)projectile.y=square.y-projectile.radius;
+                    
+                    if(projectile.y>square.y+square.height/2)projectile.y=square.y+square.height+projectile.radius;                        
+                    else if(projectile.y<square.y+square.height/2)projectile.y=square.y-projectile.radius;
                     projectile.dy*=-1;
                     this.playCollision(projectile.soundPath,0.5);
                     this.initC(projectile.x,projectile.y,projectile.dx,projectile.dy,false,square.color,square.hp*2);
@@ -555,8 +556,8 @@ class Player{
                     //- berarti kiri
                     //+ berarti kanan
                     
-                    if(projectile.x>square.x)projectile.x=square.x+square.width+projectile.radius;
-                    else if(projectile.x<square.x)projectile.x=square.x-projectile.radius;
+                    if(projectile.x>square.x+square.width/2)projectile.x=square.x+square.width+projectile.radius;
+                    else if(projectile.x<square.x+square.width/2)projectile.x=square.x-projectile.radius;
                     projectile.dx*=-1;
                     this.playCollision(projectile.soundPath,0.5);
                     this.initC(projectile.x,projectile.y,projectile.dx,projectile.dy,true,square.color,square.hp*2);
@@ -651,20 +652,15 @@ class Player{
                     }
                     if (distX <= (square.width / 2)) {
                         
-                        if(circle.y>square.y)circle.y=square.y+square.height+circle.radius;                        
-                        else if(circle.y<square.y)circle.y=square.y-circle.radius;
-    
+                        if(circle.y>square.y+square.height/2)circle.y=square.y+square.height+circle.radius;
+                        else if(circle.y<square.y+square.height/2)circle.y=square.y-circle.radius;   
                         circle.dy*=-1;    
                     }
                     if (distY <= (square.height / 2)) {
-                        if(circle.x>square.x)circle.x=square.x+square.width+circle.radius;
-                        else if(circle.x<square.x)circle.x=square.x-circle.radius;
-    
+                        if(circle.x>square.x+square.width/2)circle.x=square.x+square.width+circle.radius;
+                        else if(circle.x<square.x+square.width/2)circle.x=square.x-circle.radius;
                         circle.dx*=-1;
                     }
-    
-                    
-                    
                 })
                 
 
