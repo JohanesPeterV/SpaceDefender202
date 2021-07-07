@@ -303,44 +303,40 @@ class Environment{
     SQUARE_GAP=0;
     X_BORDER=(window_width-this.SQUARE_SIZE*30)/2;
     Y_BORDER=100;
-    pushing=false;
+    pushing=30;
     ROUND_INTERVAL=200/30;
     
     triggerRound=function(){
         let sum=25;
         let winx=(window_width-sum*this.SQUARE_SIZE)/2;
-        this.pushSquaresDown();
+        
         for(let i=0;i<sum;i++){
             if(Math.floor(Math.random()*3)!=1)this.squares.push(new Square(winx+(i*(this.SQUARE_SIZE+this.SQUARE_GAP)), -this.SQUARE_SIZE, this.SQUARE_SIZE, this.SQUARE_SIZE, Math.floor((Math.random()*12)+12), 'white','#007cbd'));
         }
+        this.pushSquaresDown();
+        
+            waves++;
+        
     }
     constructor(){
         this.squares =[];
 
     }
     pushSquaresDown(){
-        this.pushing=true;
+        this.pushing=0;
     }
     moveSquaresDown(){
-        if(this.pushing==false)return;
+        if(this.pushing>=30)return;
+        this.pushing+=1;
         let miniPush=(this.SQUARE_SIZE+this.SQUARE_GAP)/30;
         
-        setTimeout(() => {
-        
-            waves++;
-        },  30*this.ROUND_INTERVAL) 
-        for(let i = 0 ; i<30; i++){
-            this.squares.forEach(square => {
-                
-                square.lastY=square.y;
-                square.lastX=square.x;
-            setTimeout(() => {
-                square.y+=miniPush;
+        this.squares.forEach(square => {
+            square.lastY=square.y;
+            square.lastX=square.x;
+            square.y+=miniPush;
+        });
 
-            },  i*this.ROUND_INTERVAL) 
-            });
-        }
-        this.pushing=false;
+        
 
     }
     drawSquares(context){
@@ -543,6 +539,8 @@ class Player{
                 if (distX <= (square.width / 2)) {
                     //- naik
                     //+ turun  
+                    if(projectile.y>square.y)projectile.y=square.y+square.height+projectile.radius;                        
+                    else if(projectile.y<square.y)projectile.y=square.y-projectile.radius;
                     projectile.dy*=-1;
                     this.playCollision(projectile.soundPath,0.5);
                     this.initC(projectile.x,projectile.y,projectile.dx,projectile.dy,false,square.color,square.hp*2);
@@ -555,6 +553,9 @@ class Player{
                 if (distY <= (square.height / 2)) {
                     //- berarti kiri
                     //+ berarti kanan
+                    
+                    if(projectile.x>square.x)projectile.x=square.x+square.width+projectile.radius;
+                    else if(projectile.x<square.x)projectile.x=square.x-projectile.radius;
                     projectile.dx*=-1;
                     this.playCollision(projectile.soundPath,0.5);
                     this.initC(projectile.x,projectile.y,projectile.dx,projectile.dy,true,square.color,square.hp*2);
@@ -636,7 +637,6 @@ class Player{
             let t=circle.travelTime++;
             circle.update(this.tVelocity,this.x,this.y);
             for(let i=0;i<t;i++){
-                circle.calculate();
                 
                 this.environment.squares.forEach(square => {   
                     var distX = Math.abs(circle.x - square.x - square.width / 2);
@@ -645,15 +645,20 @@ class Player{
                     if (distX > (square.width / 2 + circle.radius)) {
                         return;
                     }
-                    if (distY > (square.width / 2 + circle.radius)) {
+                    if (distY > (square.height / 2 + circle.radius)) {
                         return;    
                     }
                     if (distX <= (square.width / 2)) {
-                        //+ turun  
-                        circle.dy*=-1;
+                        
+                        if(circle.y>square.y)circle.y=square.y+square.height+circle.radius;                        
+                        else if(circle.y<square.y)circle.y=square.y-circle.radius;
     
+                        circle.dy*=-1;    
                     }
                     if (distY <= (square.height / 2)) {
+                        if(circle.x>square.x)circle.x=square.x+square.width+circle.radius;
+                        else if(circle.x<square.x)circle.x=square.x-circle.radius;
+    
                         circle.dx*=-1;
                     }
     
@@ -662,6 +667,7 @@ class Player{
                 })
                 
 
+                circle.calculate();
             
                 if(circle.travelTime>600){
                     isDead=idx;
@@ -750,7 +756,7 @@ function init(){
     hasLost=false;
     environment=new Environment();
 
-    player = new Player(window_width/2, window_height-5, 20, '#5d9cbd', 9,40,environment);
+    player = new Player(window_width/2, window_height-5, 20, '#5d9cbd', 9,20,environment);
 
     waves=0;
     kill=0;
@@ -812,20 +818,11 @@ playAgainBtn.addEventListener('click', ()=>{
     if(hasLost)init();
     scoreDiv.style.display='block';
     environment.triggerRound();
-    setTimeout(() => {
-        environment.triggerRound();
-    },  200) 
-    setTimeout(() => {
-        environment.triggerRound();
-    },  400) 
-    setTimeout(() => {
-        environment.triggerRound();
-    },  600) 
 
-        popup.style.display='none';
-        if(firstGame)playBg();
-        firstGame=false;
-        startFps(60);
+    popup.style.display='none';
+    if(firstGame)playBg();
+    firstGame=false;
+    startFps(60);
 
     
 })
