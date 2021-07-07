@@ -508,9 +508,11 @@ class Player{
     }
     
     updatePosition(){
+        
         if(this.isShooting)return;
-        if(this.left&&this.x-this.radius>=0) this.x -= this.speed;
-        if(this.right&&this.x<=window_width-environment.X_BORDER-(window_width-environment.X_BORDER-1)/8) this.x += this.speed;
+        if(this.left&&this.x-this.radius>0) this.x -= this.speed;
+        if(this.right&&this.x+this.radius<window_width) this.x += this.speed;
+
     }
 
     updateProjectiles(context){
@@ -755,7 +757,7 @@ function init(){
     hasLost=false;
     environment=new Environment();
 
-    player = new Player(window_width/2, window_height-5, 20, '#5d9cbd', 9,1,environment);
+    player = new Player(window_width/2, window_height-5, 20, '#5d9cbd', 9,30,environment);
 
     waves=0;
     kill=0;
