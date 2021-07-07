@@ -437,8 +437,8 @@ class Player{
             this.right=false;
             const angle = Math.atan2(e.clientY - this.y, e.clientX - this.x);
             const velocity = {
-                x: Math.cos(angle)*20,
-                y: Math.sin(angle)*20
+                x: Math.cos(angle)*8,
+                y: Math.sin(angle)*8
             }
             
             for(let i=0; i<projectileCount; i++){
@@ -610,8 +610,8 @@ class Player{
     initTrajectories(){
         let tAngle = Math.atan2(339 - this.y, 647 - this.x);
         this.tVelocity = {
-            x: Math.floor(Math.cos(tAngle)*20),
-            y: Math.floor(Math.sin(tAngle)*20)
+            x: Math.floor(Math.cos(tAngle)*8),
+            y: Math.floor(Math.sin(tAngle)*8)
         }
 
         
@@ -619,8 +619,8 @@ class Player{
         canvas.onmousemove = e =>{
             let tAngle = Math.atan2(e.clientY - this.y, e.clientX - this.x);
             this.tVelocity = {
-                x: Math.cos(tAngle)*20,
-                y: Math.sin(tAngle)*20
+                x: Math.cos(tAngle)*8,
+                y: Math.sin(tAngle)*8
             }
 
         }
